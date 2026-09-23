@@ -1,0 +1,43 @@
+name: GitHub Metrics
+
+on:
+  schedule:
+    - cron: "0 18 * * *"   # Daily at 11:30 PM IST
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  metrics:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Generate GitHub Stats Card
+        uses: lowlighter/metrics@v3.34
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: rajeshsohani53
+          filename: github-metrics.svg
+          template: classic
+          base: header
+          config_timezone: Asia/Kolkata
+          output_action: commit
+          committer_message: "chore: update github-metrics.svg"
+
+      - name: Generate Top Languages Card
+        uses: lowlighter/metrics@v3.34
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: rajeshsohani53
+          filename: github-languages.svg
+          template: classic
+          base: ""
+          plugin_languages: yes
+          plugin_languages_indepth: yes
+          plugin_languages_limit: 6
+          config_timezone: Asia/Kolkata
+          output_action: commit
+          committer_message: "chore: update github-languages.svg"

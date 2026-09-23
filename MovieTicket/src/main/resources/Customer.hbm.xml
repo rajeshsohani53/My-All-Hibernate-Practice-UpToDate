@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"> 
+<hibernate-mapping>
+<class name="com.rajesh.Entity.Customer" table="customer">
+    <id name="customerId">
+ 	<generator class="increment"/> 
+ 	</id> 
+ 	<property name="customerName" column="customerName"/> 
+ 	<property name="customerEmail" column="customerEmail"/> 
+ 	<property name="customerCity" column="customerCity"/>
+ 	<bag name="bookings" inverse="true">
+ 	  <key column="customerId"></key>
+ 	  <one-to-many class="com.rajesh.Entity.Bookings"/>
+ 	</bag>
+ 	
+ 	
+</class>
+</hibernate-mapping>

@@ -1,5 +1,7 @@
 package com.rajesh.HQL;
 
+import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -7,7 +9,7 @@ import org.hibernate.query.Query;
 
 import com.rajesh.Entity.Festival;
 
-public class HQL01 {
+public class HQL3 {
 
     public static void main(String[] args) {
 
@@ -25,20 +27,40 @@ public class HQL01 {
         Session s = sessionFactory.openSession();
 
         // 5. Write HQL query
-        String hql = "FROM Festival WHERE id = :id";
+        //String hql = "name FROM Festival ";//select name,description,month
 
+        
+//             Query<Object[]>q=s.createQuery("select name,description from Festival ",Festival.class);
+//           List<Festival> data=q.getResultList();
+//           for(Festival d:data)
+//           {
+//        	   System.out.println(d);
+//           }
+        
+        Query<Long> q = s.createQuery(
+        	    "SELECT count(f) from Festival f",
+        	    Long.class
+        	);
+        
+
+        Long count= q.getSingleResult();
+
+        	System.out.println(count);
+        
+        
+        
         // 6. Create Query object
-        Query<Festival> query =
-                s.createQuery(hql, Festival.class);
+        //Query<Festival> query =
+             //   s.createQuery(hql, Festival.class);
 
         // 7. Set value for named parameter
-        query.setParameter("id", 1);
-
+        //query.setParameter("id", 1);
+        
         // 8. Execute query
-        Festival data = query.uniqueResult();
+       // Festival data = (Festival) query.getParameters();
 
         // 9. Print result
-        System.out.println(data);
+        //System.out.println(data);
 
         // 10. Close Session
         s.close();

@@ -1,0 +1,182 @@
+SQL PRACTICE ANSWERS
+Schema: customer(customerId, customerName, customerEmail, customerCity)
+        movies(movieId, movieName, genre, ticketPrice)
+        bookings(bookingId, bookingDate, seats, totalAmount, customerId, movieId)
+Tested against MySQL 8.
+
+-- BASICS --
+
+1. SELECT * FROM customer;
+
+2. SELECT movieName, genre, ticketPrice FROM movies;
+
+3. SELECT * FROM bookings ORDER BY bookingDate DESC;
+
+4. SELECT customerName, customerCity FROM customer WHERE customerCity = 'Pune';
+
+5. SELECT movieName FROM movies WHERE genre = 'Action';
+
+6. SELECT * FROM bookings WHERE seats > 2;
+
+7. SELECT DISTINCT customerCity FROM customer;
+
+8. SELECT DISTINCT genre FROM movies;
+
+9. SELECT * FROM bookings ORDER BY totalAmount DESC LIMIT 5;
+
+10. SELECT customerName FROM customer ORDER BY customerName ASC;
+
+-- FILTERING & CONDITIONS --
+
+11. SELECT * FROM customer WHERE customerEmail LIKE '%@gmail.com';
+
+12. SELECT * FROM movies WHERE ticketPrice BETWEEN 200 AND 400;
+
+13. SELECT * FROM bookings WHERE bookingDate >= CURDATE() - INTERVAL 30 DAY;
+
+14. SELECT * FROM customer WHERE customerName LIKE 'A%';
+
+15. SELECT movieName FROM movies WHERE movieName LIKE '%2%';
+
+16. SELECT * FROM bookings WHERE totalAmount > 1500;
+
+17. SELECT * FROM customer WHERE customerCity IN ('Pune', 'Mumbai');
+
+18. SELECT * FROM bookings WHERE seats BETWEEN 1 AND 3;
+
+19. SELECT * FROM movies WHERE genre <> 'Comedy-Horror';
+
+20. SELECT * FROM customer WHERE customerCity IS NULL;
+
+-- AGGREGATE FUNCTIONS --
+
+21. SELECT COUNT(*) AS totalCustomers FROM customer;
+
+22. SELECT COUNT(*) AS totalBookings FROM bookings;
+
+23. SELECT SUM(totalAmount) AS totalRevenue FROM bookings;
+
+24. SELECT AVG(ticketPrice) AS avgTicketPrice FROM movies;
+
+25. SELECT MAX(totalAmount) AS maxAmount, MIN(totalAmount) AS minAmount FROM bookings;
+
+26. SELECT AVG(seats) AS avgSeats FROM bookings;
+
+27. SELECT COUNT(DISTINCT movieId) AS distinctMoviesBooked FROM bookings;
+
+28. SELECT COUNT(DISTINCT customerId) AS distinctCustomersBooked FROM bookings;
+
+29. SELECT movieName, ticketPrice FROM movies ORDER BY ticketPrice DESC LIMIT 1;
+
+30. SELECT m.genre, SUM(b.totalAmount) AS totalRevenue
+    FROM movies m JOIN bookings b ON m.movieId = b.movieId
+    GROUP BY m.genre;
+
+-- GROUP BY & HAVING --
+
+31. SELECT c.customerId, c.customerName, SUM(b.totalAmount) AS totalSpent
+    FROM customer c JOIN bookings b ON c.customerId = b.customerId
+    GROUP BY c.customerId, c.customerName;
+
+32. SELECT c.*
+    FROM customer c JOIN bookings b ON c.customerId = b.customerId
+    GROUP BY c.customerId
+    HAVING SUM(b.totalAmount) > 1500;
+
+33. SELECT c.customerName, COUNT(b.bookingId) AS numBookings
+    FROM customer c JOIN bookings b ON c.customerId = b.customerId
+    GROUP BY c.customerId, c.customerName;
+
+34. SELECT m.movieName, m.genre, COUNT(b.bookingId) AS numBookings,
+           COUNT(DISTINCT b.customerId) AS numCustomers, SUM(b.totalAmount) AS totalRevenue
+    FROM movies m JOIN bookings b ON m.movieId = b.movieId
+    GROUP BY m.movieId, m.movieName, m.genre;
+
+35. SELECT customerCity, COUNT(*) AS numCustomers
+    FROM customer
+    GROUP BY customerCity
+    HAVING COUNT(*) > 2;
+
+36. SELECT m.genre, SUM(b.totalAmount) AS totalRevenue
+    FROM movies m JOIN bookings b ON m.movieId = b.movieId
+    GROUP BY m.genre
+    HAVING SUM(b.totalAmount) > 2000;
+
+37. SELECT c.customerId, c.customerName, COUNT(b.bookingId) AS numBookings
+    FROM customer c JOIN bookings b ON c.customerId = b.customerId
+    GROUP BY c.customerId, c.customerName
+    HAVING COUNT(b.bookingId) > 1;
+
+38. SELECT m.movieName, COUNT(DISTINCT b.customerId) AS numCustomers
+    FROM movies m JOIN bookings b ON m.movieId = b.movieId
+    GROUP BY m.movieId, m.movieName
+    HAVING COUNT(DISTINCT b.customerId) > 2;
+
+39. SELECT c.customerCity, AVG(b.totalAmount) AS avgSpent
+    FROM customer c JOIN bookings b ON c.customerId = b.customerId
+    GROUP BY c.customerCity;
+
+40. SELECT m.movieName, SUM(b.seats) AS totalSeats
+    FROM movies m JOIN bookings b ON m.movieId = b.movieId
+    GROUP BY m.movieId, m.movieName;
+
+-- JOINS --
+
+41. SELECT c.customerName, m.movieName
+    FROM customer c
+    JOIN bookings b ON c.customerId = b.customerId
+    JOIN movies m ON b.movieId = m.movieId;
+
+42. SELECT m.movieName, c.customerName, c.customerCity
+    FROM movies m
+    JOIN bookings b ON m.movieId = b.movieId
+    JOIN customer c ON b.customerId = c.customerId;
+
+43. SELECT b.bookingDate, b.seats, b.totalAmount, c.customerName, m.movieName
+    FROM bookings b
+    JOIN customer c ON b.customerId = c.customerId
+    JOIN movies m ON b.movieId = m.movieId;
+
+44. SELECT c.*
+    FROM customer c
+    LEFT JOIN bookings b ON c.customerId = b.customerId
+    WHERE b.bookingId IS NULL;
+
+45. SELECT m.*
+    FROM movies m
+    LEFT JOIN bookings b ON m.movieId = b.movieId
+    WHERE b.bookingId IS NULL;
+
+46. SELECT c.customerName, m.movieName, b.totalAmount
+    FROM bookings b
+    JOIN customer c ON b.customerId = c.customerId
+    JOIN movies m ON b.movieId = m.movieId
+    WHERE MONTH(b.bookingDate) = MONTH(CURDATE())
+      AND YEAR(b.bookingDate) = YEAR(CURDATE());
+
+-- SUBQUERIES --
+
+47. SELECT c.customerId, c.customerName, SUM(b.totalAmount) AS totalSpent
+    FROM customer c JOIN bookings b ON c.customerId = b.customerId
+    GROUP BY c.customerId, c.customerName
+    HAVING SUM(b.totalAmount) = (
+        SELECT MAX(total) FROM (
+            SELECT SUM(totalAmount) AS total FROM bookings GROUP BY customerId
+        ) AS t
+    );
+
+48. SELECT * FROM movies
+    WHERE ticketPrice > (SELECT AVG(ticketPrice) FROM movies);
+
+49. SELECT DISTINCT c.customerName
+    FROM customer c JOIN bookings b ON c.customerId = b.customerId
+    WHERE b.movieId = (SELECT movieId FROM movies ORDER BY ticketPrice DESC LIMIT 1);
+
+50. SELECT m.movieName, SUM(b.totalAmount) AS totalRevenue
+    FROM movies m JOIN bookings b ON m.movieId = b.movieId
+    GROUP BY m.movieId, m.movieName
+    HAVING SUM(b.totalAmount) = (
+        SELECT MAX(rev) FROM (
+            SELECT SUM(totalAmount) AS rev FROM bookings GROUP BY movieId
+        ) AS t
+    );

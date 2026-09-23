@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"> 
+<hibernate-mapping>
+<class name="com.rajesh.Entity.Movies" table="movies">
+    <id name="movieId">
+ 	<generator class="increment"/> 
+ 	</id> 
+ 	<property name="movieName" column="movieName"/> 
+ 	<property name="genre" column="genre"/> 
+ 	<property name="ticketPrice" column="ticketPrice"/>
+ 	<bag name="bookings" inverse="true">
+ 	<key column="movieId"></key>
+ 	<one-to-many class="com.rajesh.Entity.Bookings"/>
+ 	</bag>
+ 	
+ 	
+</class>
+</hibernate-mapping>

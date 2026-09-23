@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"> 
+<hibernate-mapping>
+<class name="com.rajesh.Entity.Bookings" table="bookings">
+    <id name="bookingId">
+ 	<generator class="increment"/> 
+ 	</id> 
+ 	<property name="bookingDate" column="bookingDate"/> 
+ 	<property name="seats" column="seats"/> 
+ 	<property name="totalAmount" column="totalAmount"/>
+ 	<many-to-one 
+ 	name="customer" 
+ 	class="com.rajesh.Entity.Customer" 
+ 	column="customerId"
+ 	not-null="true"
+ 	>
+
+ 	</many-to-one>
+ 	
+ 	<many-to-one 
+ 	name="movies" 
+ 	class="com.rajesh.Entity.Movies" 
+ 	column="movieId"
+ 	not-null="true"
+ 	>
+
+ 	</many-to-one>
+ 	
+ 	
+</class>
+</hibernate-mapping>
